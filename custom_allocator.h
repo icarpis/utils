@@ -2,6 +2,9 @@
 #define CUSTOM_ALLOCATOR_H
 
 #include <iostream>
+#include <memory>
+#include <limits>
+#include <cstdint>
 
 #ifdef __EXCEPTIONS
 #include <exception>

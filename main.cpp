@@ -1,10 +1,12 @@
 #include "custom_allocator.h"
 #include "mem_pool.h"
+#include "dynamic_safe_queue.h"
+#include "peterson's_algo_for_n_process.h"
 #include <cstdio>
 #include <cstdlib>
 #include <thread>
 #include <mutex>
-#include "peterson's_algo_for_n_process.h"
+
 
 
 #define SIZE (1024*1024)
@@ -110,6 +112,27 @@ int main()
         void* ptr = mp.malloc(1024, 128);
         mp.free(ptr);
     }
+
+
+    // Safe Queue
+    queue_handler_s queue_handler = {};
+
+    dynamic_safe_queue::get_instance()->init_queue(&queue_handler, 16);
+
+    uint8_t item[] = { 1, 2, 3, 4, 5, 6 };
+    uint32_t actual_item_size_in_bytes = 0;
+    dynamic_safe_queue::get_instance()->dequeue(&queue_handler, item, sizeof(item), &actual_item_size_in_bytes);
+
+    dynamic_safe_queue::get_instance()->enqueue(&queue_handler, item, 4);
+    dynamic_safe_queue::get_instance()->enqueue(&queue_handler, item, 6);
+    dynamic_safe_queue::get_instance()->dequeue(&queue_handler, item, sizeof(item), &actual_item_size_in_bytes);
+    dynamic_safe_queue::get_instance()->dequeue(&queue_handler, item, sizeof(item), &actual_item_size_in_bytes);
+    dynamic_safe_queue::get_instance()->enqueue(&queue_handler, item, 6);
+    dynamic_safe_queue::get_instance()->dequeue(&queue_handler, item, sizeof(item), &actual_item_size_in_bytes);
+
+    dynamic_safe_queue::get_instance()->dequeue(&queue_handler, item, sizeof(item), &actual_item_size_in_bytes);
+    dynamic_safe_queue::get_instance()->dequeue(&queue_handler, item, sizeof(item), &actual_item_size_in_bytes);
+    dynamic_safe_queue::get_instance()->dequeue(&queue_handler, item, sizeof(item), &actual_item_size_in_bytes);
 
 
     // Peterson's algo for n process

@@ -1,6 +1,8 @@
 #ifndef MEM_POOL_H
 #define MEM_POOL_H
 
+#include <cstdint>
+#include <memory>
 
 #ifdef __EXCEPTIONS
 #include <exception>
