@@ -1,3 +1,4 @@
+#include "background_task_executor.h"
 #include "custom_allocator.h"
 #include "mem_pool.h"
 #include "dynamic_safe_queue.h"
@@ -82,6 +83,14 @@ void cpu2()
 
 int main()
 {
+    // background_task_executor
+    for (int i = 0; i < 100; ++i)
+    {
+        background_task_executor::get_instance()->add_task([i]() { std::cout << i << std::endl; });
+    }
+
+    return 0;
+
     // memory_pool
     {
         memory_pool<> mp(SIZE);
