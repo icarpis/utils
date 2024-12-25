@@ -89,7 +89,6 @@ int main()
         background_task_executor::get_instance()->add_task([i]() { std::cout << i << std::endl; });
     }
 
-    return 0;
 
     // memory_pool
     {
