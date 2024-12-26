@@ -3,6 +3,7 @@
 #include "mem_pool.h"
 #include "dynamic_safe_queue.h"
 #include "peterson's_algo_for_n_process.h"
+#include "safe_malloc_free.h"
 #include <cstdio>
 #include <cstdlib>
 #include <thread>
@@ -89,7 +90,6 @@ int main()
         background_task_executor::get_instance()->add_task([i]() { std::cout << i << std::endl; });
     }
 
-
     // memory_pool
     {
         memory_pool<> mp(SIZE);
@@ -119,6 +119,31 @@ int main()
         memory_pool<custom_allocator<uint8_t>> mp(SIZE);
         void* ptr = mp.malloc(1024, 128);
         mp.free(ptr);
+    }
+
+    // Safe Malloc Free
+    {
+        auto wptr1 = safe_malloc(10);
+        auto wptr2 = wptr1;
+
+
+        {
+            if (std::shared_ptr<void> sptr = wptr1.lock())
+            {
+                void* ptr = sptr.get();
+                ptr = ptr;
+            }
+
+            safe_free(wptr1);
+
+            if (std::shared_ptr<void> sptr = wptr2.lock())
+            {
+                void* ptr = sptr.get();
+                ptr = ptr;
+            }
+
+            safe_free(wptr1);
+        }
     }
 
 
